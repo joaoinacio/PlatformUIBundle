@@ -4,3 +4,10 @@
     <li><a href="{{ path "viewLocation" id="/api/ezp/v2/content/locations/1/2" }}">Root location</a></li>
     <li><a href="{{ path "viewLocation" id="/api/ezp/v2/content/locations/1/2/90/93" }}">Test content</a></li>
 </ul>
+
+<p>Universal discovery confirm count: <span class="ez-ud-count" style="font-size: 200%; font-weight: bold;">0</span></p>
+
+<p>
+    <button class="ez-discover ez-button pure-button">Universal discovery widget</button>
+    <button class="ez-discover-settings ez-button pure-button">Universal discovery widget with custom settings</button>
+</p>
