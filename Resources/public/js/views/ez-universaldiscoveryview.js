@@ -23,7 +23,7 @@ YUI.add('ez-universaldiscoveryview', function (Y) {
      * @constructor
      * @extends eZ.TemplateBasedView
      */
-    Y.eZ.UniversalDiscoveryView = Y.Base.create('universalDiscoveryView', Y.eZ.TemplateBasedView, [], {
+    Y.eZ.UniversalDiscoveryView = Y.Base.create('universalDiscoveryView', Y.eZ.TemplateBasedView, [Y.eZ.Tabs], {
         events: {
             '.ez-universaldiscovery-confirm': {
                 'tap': '_confirmSelection'
@@ -137,12 +137,54 @@ YUI.add('ez-universaldiscoveryview', function (Y) {
         },
 
         render: function () {
-            this.get('container').setHTML(this.template({
+            var container = this.get('container');
+
+            container.setHTML(this.template({
                 title: this.get('title'),
                 selectionMode: this.get('selectionMode'),
+                methods: this._methodsList(),
             }));
+            this._renderMethods();
             return this;
-        }
+        },
+
+        /**
+         * Renders the available methods in a DOM element which id is the
+         * identifier of the method.
+         *
+         * @method _renderMethods
+         * @protected
+         */
+        _renderMethods: function () {
+            var container = this.get('container');
+
+            Y.Array.each(this.get('methods'), function (method) {
+                container.one('#' + method.getHTMLIdentifier()).append(method.render().get('container'));
+            });
+        },
+
+        /**
+         * Builds an array containing objects that describes the available
+         * methods.
+         *
+         * @protected
+         * @method _methodsList
+         * @return Array
+         */
+        _methodsList: function () {
+            var res = [],
+                def = this.get('defaultMethod');
+
+            Y.Array.each(this.get('methods'), function (method) {
+                method.set('visible', def === method.get('identifier'));
+                res.push({
+                    title: method.get('title'),
+                    identifier: method.getHTMLIdentifier(),
+                    visible: method.get('visible'),
+                });
+            });
+            return res;
+        },
     }, {
         ATTRS: {
             /**
@@ -187,6 +229,40 @@ YUI.add('ez-universaldiscoveryview', function (Y) {
              */
             cancelDiscoverHandler: {
                 value: null,
+            },
+
+            /**
+             * The available methods to discover content. Each element in the
+             * array should be an instance of a class extending
+             * Y.eZ.UniversalDiscoveryMethodBaseView.
+             *
+             * @attribute methods
+             * @type array
+             */
+            methods: {
+                valueFn: function () {
+                    return [
+                        new Y.eZ.UniversalDiscoveryBrowseView({
+                            priority: 100,
+                            selectionMode: this.get('selectionMode'),
+                        }),
+                        new Y.eZ.UniversalDiscoveryRecentView({
+                            priority: 80,
+                            selectionMode: this.get('selectionMode'),
+                        }),
+                    ];
+                },
+            },
+
+            /**
+             * The identifier of the default (selected tab) method
+             *
+             * @attribute defaultMethod
+             * @type String
+             * @default 'browse'
+             */
+            defaultMethod: {
+                value: 'browse',
             },
         }
     });

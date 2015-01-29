@@ -59,6 +59,7 @@ YUI.add('ez-tabs', function (Y) {
      * @param {Node} container
      */
     Tabs.prototype._selectTab = function (tabLabel, targetId, container) {
+        // TODO: fire a custom event when switching from a tab to another
         if ( tabLabel.hasClass(TAB_IS_SELECTED) ) {
             return;
         }
