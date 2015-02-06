@@ -56,6 +56,19 @@ YUI.add('ez-navigationitemview', function (Y) {
         },
 
         /**
+         * Returns whether the matched route is the same as the one stored in
+         * the navigation item.
+         *
+         * @method _sameRoute
+         * @protected
+         * @param {Object} route the matched route
+         * @return Boolean
+         */
+        _sameRoute: function (route) {
+            return this.get('route').name === route.name;
+        },
+
+        /**
          * Checks whether the navigation item is selected or not based on the
          * matched route object provided by the navigation hub service.
          * This default implementation only compares the matched route name
@@ -66,7 +79,7 @@ YUI.add('ez-navigationitemview', function (Y) {
          * @return {Boolean}
          */
         match: function (route) {
-            var selected = (route.name === this.get('route').name);
+            var selected = this._sameRoute(route);
 
             this._set('selected', selected);
             return selected;
